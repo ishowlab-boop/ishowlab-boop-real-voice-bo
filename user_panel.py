@@ -170,7 +170,7 @@ def register_user_handlers(bot: telebot.TeleBot, db):
             "✨ <b>Welcome to our bot!</b> 🤖\n"
             "We're glad to have you here 💙\n\n"
             "📢 <b>Share this bot with your friends:</b>\n"
-            "🔗 <a href=\"https://t.me/ishowlab_bot\">t.me/ishowlab_bot</a>\n\n"
+            "🔗 <a href=\"https://t.me/ishowlab_bot\">t.me/realvoi_bot</a>\n\n"
             "🙏 Thank you for joining us!\n"
             f"🆔 <b>Your ID:</b> <code>{message.from_user.id}</code>"
         )
