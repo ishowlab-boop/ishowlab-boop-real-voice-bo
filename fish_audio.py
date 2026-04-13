@@ -7,6 +7,7 @@ from config import (
     USE_CONFIG_MODELS_ONLY,
     FISH_AUDIO_BACKEND,
     FISH_AUDIO_MP3_BITRATE,
+    FISH_AUDIO_OPUS_BITRATE,
 )
 from fish_audio_sdk import Session, TTSRequest
 
@@ -49,14 +50,17 @@ class FishAudioClient:
         speed: Optional[float] = None,
         latency: str = "balanced",
     ) -> bytes:
-
         if latency not in ("low", "normal", "balanced"):
             latency = "balanced"
 
-        # 🔥 OPUS (VOICE MESSAGE)
         if format_ == "opus":
             try:
                 url = f"{self.base_url}/v1/tts"
+
+                valid_opus_bitrates = (-1000, 24000, 32000, 48000, 64000)
+                opus_bitrate = FISH_AUDIO_OPUS_BITRATE
+                if opus_bitrate not in valid_opus_bitrates:
+                    opus_bitrate = 48000
 
                 payload = {
                     "text": text,
@@ -65,13 +69,13 @@ class FishAudioClient:
                     "model": FISH_AUDIO_BACKEND,
                     "normalize": True,
                     "latency": latency,
-
-                    # ✅ FIXED LINE (IMPORTANT)
-                    "opus_bitrate": 48000,
+                    "opus_bitrate": opus_bitrate,
                 }
 
-                if isinstance(speed, (int, float)) and 0.5 <= float(speed) <= 1.3:
-                    payload["speed"] = float(speed)
+                if isinstance(speed, (int, float)):
+                    speed = float(speed)
+                    if 0.85 <= speed <= 1.15:
+                        payload["speed"] = speed
 
                 headers = self._headers()
                 headers["Content-Type"] = "application/json"
@@ -105,7 +109,6 @@ class FishAudioClient:
             except Exception as e:
                 raise RuntimeError(f"TTS failed (HTTP/Opus): {e}")
 
-        # 🔁 MP3 / WAV fallback
         try:
             kwargs = {
                 "text": text,
