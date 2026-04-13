@@ -116,10 +116,25 @@ def build_models_keyboard(models):
 
 def humanize_text(s: str) -> str:
     s = (s or "").strip()
+
+    # normalize spaces
     s = re.sub(r"\s+", " ", s)
-    s = s.replace(", ", ", … ")
-    s = s.replace("!", "!\n").replace("?", "?\n").replace(".", ".\n")
+
+    # normalize punctuation spacing
+    s = re.sub(r"\s*([,.!?])\s*", r"\1 ", s)
+
+    # avoid too many dots
+    s = s.replace("...", "…")
+    s = re.sub(r"\.{2,}", ".", s)
+
+    # mild sentence breaks only
+    s = s.replace("! ", "!\n")
+    s = s.replace("? ", "?\n")
+    s = s.replace(". ", ".\n")
+
+    # don't over-break short fragments
     s = re.sub(r"\n{3,}", "\n\n", s)
+
     return s.strip()
 
 
@@ -139,11 +154,11 @@ def build_speed_keyboard():
 def speed_to_value(mode: str) -> float:
     mode = (mode or "natural").lower()
     return {
-        "fast": 1.08,
+        "fast": 1.04,
         "normal": 1.00,
-        "natural": 0.94,
-        "slow": 0.88,
-    }.get(mode, 0.94)
+        "natural": 0.98,
+        "slow": 0.94,
+    }.get(mode, 0.98)
 
 
 def speed_to_label(mode: str) -> str:
@@ -170,7 +185,7 @@ def register_user_handlers(bot: telebot.TeleBot, db):
             "✨ <b>Welcome to our bot!</b> 🤖\n"
             "We're glad to have you here 💙\n\n"
             "📢 <b>Share this bot with your friends:</b>\n"
-            "🔗 <a href=\"https://t.me/realvoi_bot\">t.me/realvoi_bot</a>\n\n"
+            "🔗 <a href=\"https://t.me/ishowlab_bot\">t.me/ishowlab_bot</a>\n\n"
             "🙏 Thank you for joining us!\n"
             f"🆔 <b>Your ID:</b> <code>{message.from_user.id}</code>"
         )
