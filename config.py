@@ -4,21 +4,25 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # -------------------------
-# FIXED ADMIN IDS (Do not overwrite)
+# FIXED ADMIN IDS
 # -------------------------
-ADMIN_IDS = [1800295558]   # <-- আপনার Telegram numeric ID
+ADMIN_IDS = [1800295558]   # আপনার Telegram numeric ID
 
+# Tokens / API
 TELEGRAM_BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 FISH_AUDIO_API_KEY = os.getenv("VOICE_API_KEY", "")
+
+# Fish Audio
 FISH_AUDIO_BASE_URL = os.getenv("FISH_AUDIO_BASE_URL", "https://api.fish.audio")
 FISH_AUDIO_BACKEND = os.getenv("FISH_AUDIO_BACKEND", "s1")
 FISH_AUDIO_MP3_BITRATE = int(os.getenv("FISH_AUDIO_MP3_BITRATE", "128"))
 
-ADMIN_CONTACT = os.getenv("ADMIN_CONTACT", "t.me/Ariyanfix")
-WEBSITE_URL   = os.getenv("WEBSITE_URL", "modelboxbd.com")
+# ✅ NEW: Opus bitrate
+FISH_AUDIO_OPUS_BITRATE = int(os.getenv("FISH_AUDIO_OPUS_BITRATE", "48000"))
 
-# REMOVE OLD ADMIN_IDS OVERRIDE ❌
-# ADMIN_IDS = [int(x) for x in os.getenv("ADMIN_IDS", "").split(",") if x.strip().isdigit()]
+# Misc
+ADMIN_CONTACT = os.getenv("ADMIN_CONTACT", "t.me/Ariyanfix")
+WEBSITE_URL = os.getenv("WEBSITE_URL", "modelboxbd.com")
 
 DB_PATH = os.getenv("DB_PATH", "file.db")
 VOICES_DIR = os.getenv("VOICES_DIR", "voices")
