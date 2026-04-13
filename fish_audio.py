@@ -46,35 +46,30 @@ class FishAudioClient:
         language: str = "en",
         format_: str = "mp3",
         mp3_bitrate: int = None,
-        speed: Optional[float] = None,      # e.g. 0.88(slow)~1.10(fast)
-        latency: str = "balanced",          # ✅ valid: low / normal / balanced
+        speed: Optional[float] = None,
+        latency: str = "balanced",
     ) -> bytes:
-        """
-        Generate speech audio.
 
-        - When format_ == 'opus', use REST API directly to obtain OGG/Opus bytes.
-        - Otherwise, use legacy Session + TTSRequest with supported formats ('mp3', 'wav', 'pcm').
-        """
-
-        # ✅ Safety: Fish API only accepts these latency variants
         if latency not in ("low", "normal", "balanced"):
             latency = "balanced"
 
-        # Direct HTTP path for Opus
+        # 🔥 OPUS (VOICE MESSAGE)
         if format_ == "opus":
             try:
                 url = f"{self.base_url}/v1/tts"
+
                 payload = {
                     "text": text,
                     "reference_id": voice_id,
                     "format": "opus",
                     "model": FISH_AUDIO_BACKEND,
                     "normalize": True,
-                    "latency": latency,      # ✅ fixed
-                    "opus_bitrate": 48,      # ✅ better quality
+                    "latency": latency,
+
+                    # ✅ FIXED LINE (IMPORTANT)
+                    "opus_bitrate": 48000,
                 }
 
-                # Optional speed (include only if valid)
                 if isinstance(speed, (int, float)) and 0.5 <= float(speed) <= 1.3:
                     payload["speed"] = float(speed)
 
@@ -82,7 +77,14 @@ class FishAudioClient:
                 headers["Content-Type"] = "application/json"
                 headers["Accept"] = "application/octet-stream"
 
-                r = requests.post(url, headers=headers, json=payload, stream=True, timeout=60)
+                r = requests.post(
+                    url,
+                    headers=headers,
+                    json=payload,
+                    stream=True,
+                    timeout=60,
+                )
+
                 if r.status_code != 200:
                     try:
                         err = r.json()
@@ -97,27 +99,29 @@ class FishAudioClient:
 
                 if not audio_bytes:
                     raise RuntimeError("TTS failed: empty audio")
+
                 return bytes(audio_bytes)
 
             except Exception as e:
                 raise RuntimeError(f"TTS failed (HTTP/Opus): {e}")
 
-        # Fallback: legacy SDK formats
+        # 🔁 MP3 / WAV fallback
         try:
-            kwargs = {"text": text, "reference_id": voice_id, "format": format_}
+            kwargs = {
+                "text": text,
+                "reference_id": voice_id,
+                "format": format_,
+            }
 
-            # Include mp3 bitrate if requested and format is mp3
-            try:
-                bitrate = mp3_bitrate if mp3_bitrate is not None else (
-                    FISH_AUDIO_MP3_BITRATE if format_ == "mp3" else None
-                )
-            except Exception:
-                bitrate = None
+            bitrate = mp3_bitrate if mp3_bitrate is not None else (
+                FISH_AUDIO_MP3_BITRATE if format_ == "mp3" else None
+            )
 
             if format_ == "mp3" and isinstance(bitrate, int) and bitrate in (64, 128, 192):
                 kwargs["mp3_bitrate"] = bitrate
 
             req = TTSRequest(**kwargs)
+
             audio_bytes = bytearray()
             for chunk in self.session.tts(req, backend=FISH_AUDIO_BACKEND):
                 if isinstance(chunk, (bytes, bytearray)):
@@ -130,6 +134,7 @@ class FishAudioClient:
 
             if not audio_bytes:
                 raise RuntimeError("TTS failed: empty audio")
+
             return bytes(audio_bytes)
 
         except Exception as e:
