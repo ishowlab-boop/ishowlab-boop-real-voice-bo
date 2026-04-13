@@ -16,8 +16,6 @@ FISH_AUDIO_API_KEY = os.getenv("VOICE_API_KEY", "")
 FISH_AUDIO_BASE_URL = os.getenv("FISH_AUDIO_BASE_URL", "https://api.fish.audio")
 FISH_AUDIO_BACKEND = os.getenv("FISH_AUDIO_BACKEND", "s1")
 FISH_AUDIO_MP3_BITRATE = int(os.getenv("FISH_AUDIO_MP3_BITRATE", "128"))
-
-# ✅ NEW: Opus bitrate
 FISH_AUDIO_OPUS_BITRATE = int(os.getenv("FISH_AUDIO_OPUS_BITRATE", "48000"))
 
 # Misc
