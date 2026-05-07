@@ -41,7 +41,9 @@ DEFAULT_MODELS = [
     {"id": "2fe69a0850b54119ad97af8246e2f6a0", "name": "Freya🧑‍🦰"},
     {"id": "60de84651feb4ac7a0bbc23c45c089e1", "name": "Gia👩‍🦱"},
     {"id": "8a7f5c27e2e04596b079e78a475d852b", "name": "Lacy🙇‍♀️"},
-     {"id": "99d3b0d6e12843adb98519581f849a48", "name": "Zoey🧚‍♀️"},
+    {"id": "99d3b0d6e12843adb98519581f849a48", "name": "Zoey🧚‍♀️"},
+    {"id": "53ca9f8d971a4410a5f9b159c56cd080", "name": "Linda🙂‍↔️"},
+    {"id": "3e2a5ae324da43d7b0de0a28182c1b19", "name": "Reina👸"},
 ]
 
 USE_CONFIG_MODELS_ONLY = True
